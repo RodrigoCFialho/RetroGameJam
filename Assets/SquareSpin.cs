@@ -1,8 +1,8 @@
 using UnityEngine;
 
-public class CubeDemo : MonoBehaviour
+public class SquareSpin : MonoBehaviour
 {
-    public GameObject cube;
+    public GameObject square;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -13,6 +13,6 @@ public class CubeDemo : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        cube.transform.Rotate(new Vector3(20, 20, 20) * Time.deltaTime);
+        square.transform.Rotate(new Vector3(0, 0, 180) * Time.deltaTime);
     }
 }
