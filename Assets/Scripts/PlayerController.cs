@@ -1,9 +1,6 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Events;
 
 public class PlayerController : MonoBehaviour
 {
@@ -15,11 +12,14 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private float dashDuration = 0.1f;
 
+    // Dash stuff
     private float dashSpeed;
     private float dashCooldown = 2f;
     private int dashLength = 6; // Dash length based on the character's length
     private bool isDashing = false;
     private float lastDashTime = -Mathf.Infinity;
+
+    private Vector2 movementInput = Vector2.zero;
 
     private void Awake()
     {
@@ -31,10 +31,16 @@ public class PlayerController : MonoBehaviour
         dashSpeed = (dashLength * playerLength) / dashDuration;
     }
 
+    void FixedUpdate() {
+        if(!isDashing) {
+            myRigidbody2D.velocity = movementInput * speed;
+        }
+    }
+
     public void EnableMovementEvent(Vector2 moveInput)
     {
         // movement
-        myRigidbody2D.velocity = moveInput * speed;
+        movementInput = moveInput;
 
         CheckFlip(moveInput.x);
     }
@@ -43,8 +49,6 @@ public class PlayerController : MonoBehaviour
         // Check cooldown
         if(Time.time < lastDashTime + dashCooldown)
             return;
-
-        Debug.Log("Dash action performed.");
 
         // Start the dash
         StartCoroutine(Dash());
