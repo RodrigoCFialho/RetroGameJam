@@ -2,22 +2,19 @@ using UnityEngine;
 
 public class SquareSpin : MonoBehaviour
 {
-    public float moveSpeed = 5f; // Movement speed of the player
+    private float moveSpeed = 5f; // Movement speed of the player
 
     private Vector2 movement; // Stores the input direction
-    public Rigidbody2D rb;   // Reference to the Rigidbody2D component
+    private Rigidbody2D myRigidbody2D;   // Reference to the Rigidbody2D component
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void Awake()
     {
-
+        myRigidbody2D = GetComponent<Rigidbody2D>();
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        rb.transform.Rotate(new Vector3(0, 0, 180) * Time.deltaTime);
-
         // Get input for horizontal and vertical axes
         float horizontal = Input.GetAxisRaw("Horizontal");
         float vertical = Input.GetAxisRaw("Vertical");
@@ -26,8 +23,8 @@ public class SquareSpin : MonoBehaviour
         movement = new Vector2(horizontal, vertical).normalized;
     }
 
-    void FixedUpdate() {
+    private void FixedUpdate() {
         // Move the player in the direction of the input
-        rb.linearVelocity = movement * moveSpeed;
+        myRigidbody2D.linearVelocity = movement * moveSpeed;
     }
 }
