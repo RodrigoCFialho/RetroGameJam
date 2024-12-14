@@ -13,12 +13,17 @@ public class InputManager : MonoBehaviour
     [SerializeField]
     private UnityEvent<Vector2> onEnableMovementEvent;
 
+    [SerializeField]
+    private UnityEvent onEnableDashEvent;
+
     private void Start()
     {
         customInput = CustomInputManager.Instance.customInputsBindings;
 
         customInput.Player.Movement.performed += InputMovementPerformed;
         customInput.Player.Movement.canceled += InputMovementCancelled;
+
+        customInput.Player.Dash.performed += InputDashPerformed;
     }
 
     private void OnDisable()
@@ -36,5 +41,9 @@ public class InputManager : MonoBehaviour
     {
         moveInput = Vector2.zero;
         onEnableMovementEvent.Invoke(moveInput);
+    }
+
+    private void InputDashPerformed(InputAction.CallbackContext context) {
+        onEnableDashEvent.Invoke();
     }
 }
