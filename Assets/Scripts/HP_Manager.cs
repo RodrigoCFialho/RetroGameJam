@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class HP_Manager : MonoBehaviour
@@ -19,11 +20,18 @@ public class HP_Manager : MonoBehaviour
     [SerializeField]
     private float damageCooldown = 0.5f;
 
+    private SpriteRenderer spriteRenderer;
+
     private float currentHP;
     private float lastDamageTime = -Mathf.Infinity;
     private float totalHealthRecovered = 0;
 
     private bool invulnerable = false;
+
+    private void Awake()
+    {
+        spriteRenderer = GetComponent<SpriteRenderer>();
+    }
 
     // Start is called before the first frame update
     private void Start()
@@ -45,6 +53,12 @@ public class HP_Manager : MonoBehaviour
 
     public void TakeDamage(float damage) 
     {
+
+        if(damage > 2)
+        {
+            StartCoroutine(Blink());
+        }
+
         if(!invulnerable) {
             if(Time.time - lastDamageTime < damageCooldown) {
                 return;
@@ -59,6 +73,19 @@ public class HP_Manager : MonoBehaviour
                 currentHP = 0;
                 Die();
             }
+        }
+    }
+
+    private IEnumerator Blink()
+    {
+        int numberOfBllinks = 0;
+        while(numberOfBllinks < 4)
+        {
+            numberOfBllinks++;
+            spriteRenderer.color = new Color(1, 1, 1, 0.1f);
+            yield return new WaitForSeconds(0.2f);
+            spriteRenderer.color = new Color(1, 1, 1, 1);
+            yield return new WaitForSeconds(0.2f);
         }
     }
 

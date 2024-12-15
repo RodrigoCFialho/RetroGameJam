@@ -22,6 +22,10 @@ public class PlayerWeapon : MonoBehaviour {
     [SerializeField] private Vector3 bounceDistanceVector;
     [SerializeField] private float maxBounceTime;
 
+    //Sound
+    [SerializeField] private AudioSource playerAudioSource;
+    [SerializeField] private AudioClip[] audioClips;
+
     private void Awake()
     {
         weaponAnimator = GetComponent<Animator>();
@@ -67,7 +71,12 @@ public class PlayerWeapon : MonoBehaviour {
     private void OnTriggerEnter2D(Collider2D other) {
         if(isDetectingEnemies && other.gameObject.CompareTag("Enemy")) {
             enemiesHit++;
-            print("Enemies hit: " + enemiesHit);
+//            if (enemiesHit == 3)
+ //           {
+                playerAudioSource.clip = audioClips[0];
+                playerAudioSource.Play();
+//            }
+
             other.GetComponent<EnemyController>().Die();
             if(enemiesHit >= enemiesDetected.Length) {
                 isDetectingEnemies = false;
@@ -77,6 +86,8 @@ public class PlayerWeapon : MonoBehaviour {
     }
 
     private void Bounce() {
+        playerAudioSource.clip = audioClips[1];
+        playerAudioSource.Play();
         weaponRigidbody.velocity = Vector3.zero;
         weaponAnimator.SetTrigger("Bounce");
         StartCoroutine(GoUp());
