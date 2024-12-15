@@ -135,6 +135,7 @@ GameObject:
   - component: {fileID: 83266458}
   - component: {fileID: 83266461}
   - component: {fileID: 83266460}
+  - component: {fileID: 83266462}
   m_Layer: 0
   m_Name: Weapon
   m_TagString: Weapon
@@ -223,6 +224,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxTravelDistance: 5
   maxTravelTime: 0.1
+  detectionSize: {x: 5, y: 0, z: 0}
+  enemiesLayerMask:
+    serializedVersion: 2
+    m_Bits: 128
+  bounceDistanceVector: {x: 0, y: 3, z: 0}
+  maxBounceTime: 0.25
 --- !u!70 &83266460
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -285,6 +292,27 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!95 &83266462
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 83266456}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 0002eb23c20e0f3438d71b1295b09401, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0

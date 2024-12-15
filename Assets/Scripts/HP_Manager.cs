@@ -75,8 +75,5 @@ public class HP_Manager : MonoBehaviour
 
     public void Die() 
     {
-        Debug.Log("Player died!");
-
-        // death code?? idk
     }
 }

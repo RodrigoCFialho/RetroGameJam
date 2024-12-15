@@ -12,6 +12,9 @@ public class PlayerShooting : MonoBehaviour
     private bool playerHasWeapon = true;
     private bool canPickWeapon = false;
 
+    //Healing Variables
+    [SerializeField] private int healPerEnemy = 0;
+
     public void EnableShootingEvent()
     {
         if(playerHasWeapon)
@@ -27,7 +30,7 @@ public class PlayerShooting : MonoBehaviour
 
     private IEnumerator CanPickWeapon()
     {
-        yield return new WaitForSeconds(.025f);
+        yield return new WaitForSeconds(.5f);//Este valor tem de ser sempre igual à duração da animação do bounce
         canPickWeapon = true;
     }
 
@@ -39,6 +42,9 @@ public class PlayerShooting : MonoBehaviour
             other.transform.rotation = Quaternion.identity;
             other.transform.parent = gameObject.transform;
             playerHasWeapon = true;
+            int enemiesHit = weapon.GetComponent<PlayerWeapon>().GetEnemiesHit();
+            int healtToRegen = healPerEnemy * enemiesHit;
+            gameObject.GetComponent<HP_Manager>().RegenHP(healtToRegen);
             weapon.SetActive(false);
         }
     }
