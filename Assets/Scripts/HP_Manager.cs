@@ -23,18 +23,20 @@ public class HP_Manager : MonoBehaviour
     private float lastDamageTime = -Mathf.Infinity;
 
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         currentHP = startingHP;
         InvokeRepeating(nameof(DrainHP), drainInterval, drainInterval);
     }
 
-    void DrainHP() {
+    private void DrainHP() 
+    {
         // Damage over time (game mechanic)
         currentHP -= drainHP;
     }
 
-    public void TakeDamage(float damage) {
+    public void TakeDamage(float damage) 
+    {
         if(Time.time - lastDamageTime < damageCooldown) {
             return;
         }
@@ -50,14 +52,16 @@ public class HP_Manager : MonoBehaviour
         }
     }
 
-    public void RegenHP(float amount) {
+    public void RegenHP(float amount) 
+    {
         currentHP += amount;
         if(currentHP > maxHP) {
             currentHP = maxHP;
         }
     }
 
-    public void Die() {
+    public void Die() 
+    {
         Debug.Log("Player died!");
 
         // death code?? idk

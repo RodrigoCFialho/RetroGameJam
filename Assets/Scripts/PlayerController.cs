@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour
 {
     private Rigidbody2D myRigidbody2D = null;
     private Collider2D myCollider2D = null;
+    private Animator myAnimator = null;
 
     [SerializeField]
     private float speed = 3f;
@@ -28,29 +29,49 @@ public class PlayerController : MonoBehaviour
 
     private Vector2 movementInput = Vector2.zero;
 
+    private Vector2 lastMoveDirection;
+
     private void Awake()
     {
-        float playerLength = GetComponent<SpriteRenderer>().bounds.size.y;
-
         myRigidbody2D = GetComponent<Rigidbody2D>();
         myCollider2D = GetComponent<Collider2D>();
+        myAnimator = GetComponent <Animator>();
 
         // Calculate speed based on length and duration
+        float playerLength = GetComponent<SpriteRenderer>().bounds.size.y;
         dashSpeed = (dashLength * playerLength) / dashDuration;
     }
 
-    void FixedUpdate() {
-        if(!isDashing) {
+    private void FixedUpdate() 
+    {
+        if(!isDashing) 
+        {
             myRigidbody2D.velocity = movementInput * speed;
+
+            // animations
+            myAnimator.SetFloat("MoveY", movementInput.y);
+            myAnimator.SetFloat("MoveX", movementInput.x);
+            myAnimator.SetFloat("MoveMagnitude", movementInput.magnitude);
+            myAnimator.SetFloat("LastMoveY", lastMoveDirection.y);
+            myAnimator.SetFloat("LastMoveX", lastMoveDirection.x);
         }
     }
 
     public void EnableMovementEvent(Vector2 moveInput)
     {
+        //Store last move direction when we stop moving
+        float moveX = moveInput.x;
+        float moveY = moveInput.y;
+
+        if ((moveX == 0 && moveY == 0) && (movementInput.x != 0 || movementInput.y != 0))
+        {
+            lastMoveDirection = movementInput;
+        }
+
+        print(lastMoveDirection);
+
         // movement
         movementInput = moveInput;
-
-        CheckFlip(moveInput.x);
     }
 
     public void EnableDashEvent() {
@@ -60,23 +81,6 @@ public class PlayerController : MonoBehaviour
 
         // Start the dash
         StartCoroutine(Dash());
-    }
-
-    private void CheckFlip(float horizontalInput)
-    {
-        if (horizontalInput < 0f && transform.right.x > 0f)
-        {
-            Flip();
-        }
-        else if (horizontalInput > 0f && transform.right.x < 0f)
-        {
-            Flip();
-        }
-    }
-
-    private void Flip()
-    {
-        transform.right = -transform.right;
     }
 
     private IEnumerator Dash() {
@@ -97,7 +101,8 @@ public class PlayerController : MonoBehaviour
         isDashing = false;
     }
 
-    private void OnTriggerStay2D(UnityEngine.Collider2D collision) {
+    private void OnTriggerStay2D(UnityEngine.Collider2D collision) 
+    {
         if(collision.gameObject.layer == LayerMask.NameToLayer("Enemy")) {
             HP_Manager healthManager = GetComponent<HP_Manager>();
             if(healthManager != null) {
