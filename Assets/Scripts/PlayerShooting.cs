@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
@@ -15,10 +16,16 @@ public class PlayerShooting : MonoBehaviour
     //Healing Variables
     [SerializeField] private int healPerEnemy = 0;
 
+    //Sound
+    [SerializeField] private AudioSource playerAudioSource;
+    [SerializeField] private List<AudioClip> audioClips;
+
     public void EnableShootingEvent()
     {
         if(playerHasWeapon)
         {
+            playerAudioSource.clip = audioClips[0];
+            playerAudioSource.Play();
             canPickWeapon = false;
             playerHasWeapon = false;
             weapon.SetActive(true);
@@ -31,6 +38,9 @@ public class PlayerShooting : MonoBehaviour
     private IEnumerator CanPickWeapon()
     {
         yield return new WaitForSeconds(.5f);//Este valor tem de ser sempre igual à duração da animação do bounce
+        var weaponDropSFX = audioClips[1];
+        print(weaponDropSFX);
+        playerAudioSource.PlayOneShot(weaponDropSFX);
         canPickWeapon = true;
     }
 
@@ -45,6 +55,11 @@ public class PlayerShooting : MonoBehaviour
             int enemiesHit = weapon.GetComponent<PlayerWeapon>().GetEnemiesHit();
             int healtToRegen = healPerEnemy * enemiesHit;
             gameObject.GetComponent<HP_Manager>().RegenHP(healtToRegen);
+            if (enemiesHit > 0)
+            {
+                var clipToPlay = audioClips[2];
+                playerAudioSource.PlayOneShot(clipToPlay);
+            }
             weapon.SetActive(false);
         }
     }

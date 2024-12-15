@@ -8,6 +8,8 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D myRigidbody2D = null;
     private Animator myAnimator = null;
     private HP_Manager hpManager = null;
+    [SerializeField] private AudioSource playerAudioSource;
+
 
     [SerializeField]
     private float speed = 3f;
@@ -17,6 +19,8 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField]
     private int dashLength = 3; // Dash length based on the character's length
+
+    [SerializeField] private AudioClip[] audioClips;
 
     [SerializeField]
     private float enemyDamage = 5f;
@@ -99,6 +103,8 @@ public class PlayerController : MonoBehaviour
     }
 
     private IEnumerator Dash() {
+        playerAudioSource.clip = audioClips[0];
+        playerAudioSource.Play();
         isDashing = true;
         myAnimator.SetBool("IsDashing", true);
         lastDashTime = Time.time;
