@@ -25,30 +25,17 @@ public class PlayerShooting : MonoBehaviour
 
     private Animator myAnimator;
 
-    private void Awake() {
-        myAnimator = GetComponent<Animator>();
-    }
-
-    public void EnableShootingEvent()
-    {
-        if(playerHasWeapon) {
-            myAnimator.SetBool("IsAttacking", true);
     //Sound
     [SerializeField] private AudioSource playerAudioSource;
     [SerializeField] private List<AudioClip> audioClips;
 
-    public void EnableShootingEvent()
-    {
-        if(playerHasWeapon)
-        {
-            playerAudioSource.clip = audioClips[0];
-            playerAudioSource.Play();
-            canPickWeapon = false;
-            playerHasWeapon = false;
-            weapon.SetActive(true);
-            weapon.transform.position = this.transform.position;
-            weapon.GetComponent<PlayerWeapon>().Shoot();
-            StartCoroutine(CanPickWeapon());
+    private void Awake() {
+        myAnimator = GetComponent<Animator>();
+    }
+
+    public void EnableShootingEvent() {
+        if(playerHasWeapon) {
+            myAnimator.SetBool("IsAttacking", true);
         }
     }
 
