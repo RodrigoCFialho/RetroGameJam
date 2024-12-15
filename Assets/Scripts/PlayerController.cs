@@ -23,7 +23,7 @@ public class PlayerController : MonoBehaviour
 
     // Dash stuff
     private float dashSpeed;
-    private float dashCooldown = 2f;
+    [SerializeField] private float dashCooldown = 2f;
     private bool isDashing = false;
     private float lastDashTime = -Mathf.Infinity;
 
@@ -47,12 +47,9 @@ public class PlayerController : MonoBehaviour
         if(!isDashing) 
         {
             myRigidbody2D.velocity = movementInput * speed;
-        }
-    }
 
-    private void Update()
-    {
-        Animations();
+            Animations();
+        }
     }
 
     private void Animations()
@@ -79,10 +76,14 @@ public class PlayerController : MonoBehaviour
         movementInput = moveInput;
     }
 
-    public void EnableDashEvent() {
+    public void EnableDashEvent() 
+    {
         // Check cooldown
         if((Time.time < lastDashTime + dashCooldown) || movementInput == Vector2.zero)
+        {
             return;
+        }
+            
 
         // Start the dash
         StartCoroutine(Dash());

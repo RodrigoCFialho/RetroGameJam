@@ -9,7 +9,7 @@ public class CustomInputManager : MonoBehaviour
     {
         if (Instance != null)
         {
-            Destroy(this);
+            Destroy(gameObject);
         }
         else
         {

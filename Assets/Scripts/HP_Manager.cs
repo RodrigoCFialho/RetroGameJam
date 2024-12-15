@@ -26,6 +26,7 @@ public class HP_Manager : MonoBehaviour
     private void Start()
     {
         currentHP = startingHP;
+        GameManager.Instance.GetStartingHealth(startingHP);
         InvokeRepeating(nameof(DrainHP), drainInterval, drainInterval);
     }
 
@@ -45,6 +46,7 @@ public class HP_Manager : MonoBehaviour
         currentHP -= damage;
 
         Debug.Log("Player HP: " + currentHP);
+        GameManager.Instance.UpdateHealthUi(currentHP);
 
         if(currentHP < 0) {
             currentHP = 0;
