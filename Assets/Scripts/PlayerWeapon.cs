@@ -18,8 +18,6 @@ public class PlayerWeapon : MonoBehaviour {
     private RaycastHit2D[] enemiesDetected;
     private int enemiesHit = 0;
 
-    //Trail Variables
-    private TrailRenderer trailRenderer;
 
     //Bounce Variables
     [SerializeField] private Vector3 bounceDistanceVector;
@@ -32,7 +30,6 @@ public class PlayerWeapon : MonoBehaviour {
     private void Awake() {
         weaponAnimator = GetComponent<Animator>();
         weaponRigidbody = GetComponent<Rigidbody2D>();
-        trailRenderer = GetComponent<TrailRenderer>();
     }
 
     public void Shoot() {
@@ -55,7 +52,6 @@ public class PlayerWeapon : MonoBehaviour {
 
     private void DetectAllEnemiesInPath(Vector2 shootingVector2D) {
         enemiesDetected = Physics2D.RaycastAll(transform.position, shootingVector2D, maxTravelDistance);
-        trailRenderer.emitting = true;
     }
 
     private IEnumerator Move(float travelTime, Vector3 initialPosition, Vector3 shootingPath) {
@@ -68,7 +64,6 @@ public class PlayerWeapon : MonoBehaviour {
             gameObject.transform.position = Vector3.Lerp(initialPosition, initialPosition + shootingPath, lerpFactor);
             yield return null;
         }
-        trailRenderer.emitting = false;
         isDetectingEnemies = false;
     }
 

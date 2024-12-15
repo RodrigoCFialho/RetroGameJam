@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using UnityEditor.U2D.Aseprite;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour {
@@ -19,7 +18,6 @@ public class PlayerController : MonoBehaviour {
     [SerializeField]
     private int dashLength = 3; // Dash length based on the character's length
 
-    private TrailRenderer trailRenderer;
 
     [SerializeField] private AudioClip[] audioClips;
 
@@ -41,7 +39,6 @@ public class PlayerController : MonoBehaviour {
         myRigidbody2D = GetComponent<Rigidbody2D>();
         myAnimator = GetComponent<Animator>();
         hpManager = GetComponent<HP_Manager>();
-        trailRenderer = GetComponent<TrailRenderer>();
 
         // Calculate speed based on length and duration
         float playerLength = GetComponent<SpriteRenderer>().bounds.size.y;
@@ -97,7 +94,6 @@ public class PlayerController : MonoBehaviour {
     }
 
     private IEnumerator Dash() {
-        trailRenderer.emitting = true;
         playerAudioSource.clip = audioClips[0];
         playerAudioSource.Play();
         isDashing = true;
@@ -117,7 +113,6 @@ public class PlayerController : MonoBehaviour {
         // Stop dashing
         isDashing = false;
         myAnimator.SetBool("IsDashing", false);
-        trailRenderer.emitting = false;
     }
 
     private void OnTriggerStay2D(UnityEngine.Collider2D collision) {
