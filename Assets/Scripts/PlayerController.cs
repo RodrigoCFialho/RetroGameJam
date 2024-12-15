@@ -47,14 +47,21 @@ public class PlayerController : MonoBehaviour
         if(!isDashing) 
         {
             myRigidbody2D.velocity = movementInput * speed;
-
-            // animations
-            myAnimator.SetFloat("MoveY", movementInput.y);
-            myAnimator.SetFloat("MoveX", movementInput.x);
-            myAnimator.SetFloat("MoveMagnitude", movementInput.magnitude);
-            myAnimator.SetFloat("LastMoveY", lastMoveDirection.y);
-            myAnimator.SetFloat("LastMoveX", lastMoveDirection.x);
         }
+    }
+
+    private void Update()
+    {
+        Animations();
+    }
+
+    private void Animations()
+    {
+        myAnimator.SetFloat("MoveY", movementInput.y);
+        myAnimator.SetFloat("MoveX", movementInput.x);
+        myAnimator.SetFloat("MoveMagnitude", movementInput.magnitude);
+        myAnimator.SetFloat("LastMoveY", lastMoveDirection.y);
+        myAnimator.SetFloat("LastMoveX", lastMoveDirection.x);
     }
 
     public void EnableMovementEvent(Vector2 moveInput)
@@ -68,15 +75,13 @@ public class PlayerController : MonoBehaviour
             lastMoveDirection = movementInput;
         }
 
-        print(lastMoveDirection);
-
         // movement
         movementInput = moveInput;
     }
 
     public void EnableDashEvent() {
         // Check cooldown
-        if(Time.time < lastDashTime + dashCooldown)
+        if((Time.time < lastDashTime + dashCooldown) || movementInput == Vector2.zero)
             return;
 
         // Start the dash
@@ -85,6 +90,7 @@ public class PlayerController : MonoBehaviour
 
     private IEnumerator Dash() {
         isDashing = true;
+        myAnimator.SetBool("IsDashing", true);
         lastDashTime = Time.time;
 
         myCollider2D.enabled = false;
@@ -99,6 +105,7 @@ public class PlayerController : MonoBehaviour
 
         // Stop dashing
         isDashing = false;
+        myAnimator.SetBool("IsDashing", false);
     }
 
     private void OnTriggerStay2D(UnityEngine.Collider2D collision) 
