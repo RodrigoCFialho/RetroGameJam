@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using UnityEngine;
 
 public class PlayerWeapon : MonoBehaviour {
@@ -18,6 +18,9 @@ public class PlayerWeapon : MonoBehaviour {
     private RaycastHit2D[] enemiesDetected;
     private int enemiesHit = 0;
 
+    //Trail Variables
+    private TrailRenderer trailRenderer;
+
     //Bounce Variables
     [SerializeField] private Vector3 bounceDistanceVector;
     [SerializeField] private float maxBounceTime;
@@ -26,10 +29,10 @@ public class PlayerWeapon : MonoBehaviour {
     [SerializeField] private AudioSource playerAudioSource;
     [SerializeField] private AudioClip[] audioClips;
 
-    private void Awake()
-    {
+    private void Awake() {
         weaponAnimator = GetComponent<Animator>();
         weaponRigidbody = GetComponent<Rigidbody2D>();
+        trailRenderer = GetComponent<TrailRenderer>();
     }
 
     public void Shoot() {
@@ -39,7 +42,7 @@ public class PlayerWeapon : MonoBehaviour {
         worldPosition.z = 0.0f;
         Vector3 shootingVector = new Vector3(worldPosition.x - gameObject.transform.position.x, worldPosition.y - gameObject.transform.position.y);
         shootingVector.Normalize();
-        Vector2 shootingVector2D = new Vector2 (shootingVector.x, shootingVector.y);
+        Vector2 shootingVector2D = new Vector2(shootingVector.x, shootingVector.y);
         Vector3 shootingPath = shootingVector * maxTravelDistance;
         float cursorAngle = Mathf.Atan2(shootingVector.x, shootingVector.y) * Mathf.Rad2Deg;
         gameObject.transform.rotation = Quaternion.Euler(0, 0, cursorAngle);
@@ -52,12 +55,12 @@ public class PlayerWeapon : MonoBehaviour {
 
     private void DetectAllEnemiesInPath(Vector2 shootingVector2D) {
         enemiesDetected = Physics2D.RaycastAll(transform.position, shootingVector2D, maxTravelDistance);
-        print("Number of enemies detected: " + enemiesDetected.Length);
+        trailRenderer.emitting = true;
     }
 
     private IEnumerator Move(float travelTime, Vector3 initialPosition, Vector3 shootingPath) {
         isDetectingEnemies = true;
-        enemiesHit = 2;//Deteta sempre 2 a mais, não sei porquê
+        enemiesHit = 2;//Deteta sempre 2 a mais, nï¿½o sei porquï¿½
 
         while(travelTime < maxTravelTime && isDetectingEnemies) {
             travelTime += Time.deltaTime;
@@ -65,17 +68,18 @@ public class PlayerWeapon : MonoBehaviour {
             gameObject.transform.position = Vector3.Lerp(initialPosition, initialPosition + shootingPath, lerpFactor);
             yield return null;
         }
+        trailRenderer.emitting = false;
         isDetectingEnemies = false;
     }
 
     private void OnTriggerEnter2D(Collider2D other) {
         if(isDetectingEnemies && other.gameObject.CompareTag("Enemy")) {
             enemiesHit++;
-//            if (enemiesHit == 3)
- //           {
-                playerAudioSource.clip = audioClips[0];
-                playerAudioSource.Play();
-//            }
+            //            if (enemiesHit == 3)
+            //           {
+            playerAudioSource.clip = audioClips[0];
+            playerAudioSource.Play();
+            //            }
 
             other.GetComponent<EnemyController>().Die();
             if(enemiesHit >= enemiesDetected.Length) {
@@ -93,13 +97,11 @@ public class PlayerWeapon : MonoBehaviour {
         StartCoroutine(GoUp());
     }
 
-    private IEnumerator GoUp()
-    {
+    private IEnumerator GoUp() {
         float bounceTime = 0.0f;
         Vector3 initialBouncePosition = transform.position;
-        
-        while (bounceTime < maxBounceTime)
-        {
+
+        while(bounceTime < maxBounceTime) {
             bounceTime += Time.deltaTime;
             float lerpFactor = bounceTime / maxBounceTime;
             gameObject.transform.position = Vector3.Lerp(initialBouncePosition, initialBouncePosition + bounceDistanceVector, lerpFactor);
@@ -112,13 +114,11 @@ public class PlayerWeapon : MonoBehaviour {
         StartCoroutine(ResetPositionAfterBounce());
     }
 
-    private IEnumerator ResetPositionAfterBounce()
-    {
+    private IEnumerator ResetPositionAfterBounce() {
         float bounceTime = 0.0f;
         Vector3 initialBouncePosition = transform.position;
 
-        while (bounceTime < maxBounceTime)
-        {
+        while(bounceTime < maxBounceTime) {
             bounceTime += Time.deltaTime;
             float lerpFactor = bounceTime / maxBounceTime;
             gameObject.transform.position = Vector3.Lerp(initialBouncePosition, initialBouncePosition - bounceDistanceVector, lerpFactor);
@@ -126,8 +126,7 @@ public class PlayerWeapon : MonoBehaviour {
         }
     }
 
-    public int GetEnemiesHit()
-    {
-        return enemiesHit -2;
+    public int GetEnemiesHit() {
+        return enemiesHit - 2;
     }
 }

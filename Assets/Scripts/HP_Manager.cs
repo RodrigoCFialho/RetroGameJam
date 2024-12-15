@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class HP_Manager : MonoBehaviour
-{
+public class HP_Manager : MonoBehaviour {
     [SerializeField]
     private float startingHP = 100;
 
@@ -28,16 +27,14 @@ public class HP_Manager : MonoBehaviour
 
     private bool invulnerable = false;
 
-    private void Awake()
-    {
+    private void Awake() {
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     // Start is called before the first frame update
-    private void Start()
-    {
+    private void Start() {
         currentHP = startingHP;
-        GameManager.Instance.GetStartingHealth(maxHP);
+        GameManager.Instance.GetStartingHealth(startingHP);
         InvokeRepeating(nameof(DrainHP), drainInterval, drainInterval);
     }
 
@@ -45,17 +42,14 @@ public class HP_Manager : MonoBehaviour
         invulnerable = invulnerability;
     }
 
-    private void DrainHP() 
-    {
+    private void DrainHP() {
         // Damage over time (game mechanic)
         TakeDamage(drainHP);
     }
 
-    public void TakeDamage(float damage) 
-    {
+    public void TakeDamage(float damage) {
 
-        if(damage > 2)
-        {
+        if(damage > 2) {
             StartCoroutine(Blink());
         }
 
@@ -76,11 +70,9 @@ public class HP_Manager : MonoBehaviour
         }
     }
 
-    private IEnumerator Blink()
-    {
+    private IEnumerator Blink() {
         int numberOfBllinks = 0;
-        while(numberOfBllinks < 4)
-        {
+        while(numberOfBllinks < 4) {
             numberOfBllinks++;
             spriteRenderer.color = new Color(1, 1, 1, 0.1f);
             yield return new WaitForSeconds(0.2f);
@@ -89,8 +81,7 @@ public class HP_Manager : MonoBehaviour
         }
     }
 
-    public void RegenHP(float amount) 
-    {
+    public void RegenHP(float amount) {
         totalHealthRecovered += amount;
         currentHP += amount;
         if(currentHP > maxHP) {
@@ -100,7 +91,6 @@ public class HP_Manager : MonoBehaviour
         GameManager.Instance.UpdateHealthUi(currentHP);
     }
 
-    public void Die() 
-    {
+    public void Die() {
     }
 }
