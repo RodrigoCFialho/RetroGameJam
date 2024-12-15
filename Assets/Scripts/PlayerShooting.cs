@@ -1,4 +1,5 @@
 using System.Collections;
+using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
@@ -15,17 +16,38 @@ public class PlayerShooting : MonoBehaviour
     //Healing Variables
     [SerializeField] private int healPerEnemy = 0;
 
+    [SerializeField]
+    private AnimatorController withWeaponController;
+
+    [SerializeField]
+    private AnimatorController withoutWeaponController;
+
+    private Animator myAnimator;
+
+    private void Awake() {
+        myAnimator = GetComponent<Animator>();
+    }
+
     public void EnableShootingEvent()
     {
-        if(playerHasWeapon)
-        {
-            canPickWeapon = false;
-            playerHasWeapon = false;
-            weapon.SetActive(true);
-            weapon.transform.position = this.transform.position;
-            weapon.GetComponent<PlayerWeapon>().Shoot();
-            StartCoroutine(CanPickWeapon());
+        if(playerHasWeapon) {
+            myAnimator.SetBool("IsAttacking", true);
         }
+    }
+
+    public void Shoot() 
+    {
+        canPickWeapon = false;
+        playerHasWeapon = false;
+
+        weapon.SetActive(true);
+        weapon.transform.position = this.transform.position;
+
+        weapon.GetComponent<PlayerWeapon>().Shoot();
+        StartCoroutine(CanPickWeapon());
+
+        myAnimator.SetBool("IsAttacking", false);
+        myAnimator.runtimeAnimatorController = withoutWeaponController;
     }
 
     private IEnumerator CanPickWeapon()
@@ -46,6 +68,7 @@ public class PlayerShooting : MonoBehaviour
             int healtToRegen = healPerEnemy * enemiesHit;
             gameObject.GetComponent<HP_Manager>().RegenHP(healtToRegen);
             weapon.SetActive(false);
+            myAnimator.runtimeAnimatorController = withWeaponController;
         }
     }
 }

@@ -1,14 +1,20 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
+    [SerializeField]
+    private CustomInput inputActions;
+
     public static GameManager Instance { get; private set; }
 
-    private float startingHealth;
+    private float maxHealth;
 
     [SerializeField] private Image healthBar;
     [SerializeField] private Image dashBar;
+
+    private bool isPaused = false;
 
     private void Awake()
     {
@@ -22,17 +28,28 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void GetStartingHealth(float startingHP)
+    public void GetStartingHealth(float maxHP)
     {
-        startingHealth = startingHP;
+        maxHealth = maxHP;
     }
 
     public void UpdateHealthUi(float currentHealth)
     {
-        healthBar.fillAmount = currentHealth / startingHealth;
+        healthBar.fillAmount = currentHealth / maxHealth;
+        Debug.Log("HP: " + healthBar.fillAmount);
     }
 
     public void UpdateDashUI(float dashPercentage) {
         dashBar.fillAmount = dashPercentage;
+    }
+
+    public void PauseGame() {
+        if(!isPaused) {
+            Time.timeScale = 0f;
+            isPaused = true;
+        } else {
+            isPaused = false;
+            Time.timeScale = 1f;
+        }
     }
 }

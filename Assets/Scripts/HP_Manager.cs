@@ -29,7 +29,7 @@ public class HP_Manager : MonoBehaviour
     private void Start()
     {
         currentHP = startingHP;
-        GameManager.Instance.GetStartingHealth(startingHP);
+        GameManager.Instance.GetStartingHealth(maxHP);
         InvokeRepeating(nameof(DrainHP), drainInterval, drainInterval);
     }
 

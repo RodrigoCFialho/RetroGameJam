@@ -19,6 +19,9 @@ public class InputManager : MonoBehaviour
     [SerializeField]
     private UnityEvent onEnableShootEvent;
 
+    [SerializeField]
+    private UnityEvent onEnablePauseEvent;
+
     private void Start()
     {
         customInput = CustomInputManager.Instance.customInputsBindings;
@@ -29,6 +32,8 @@ public class InputManager : MonoBehaviour
         customInput.Player.Dash.performed += InputDashPerformed;
 
         customInput.Player.Shoot.performed += InputShootPerformed;
+
+        customInput.Pause.Pause.performed += InputPausePerformed;
     }
 
     private void OnDisable()
@@ -54,5 +59,17 @@ public class InputManager : MonoBehaviour
 
     private void InputShootPerformed(InputAction.CallbackContext context) {
         onEnableShootEvent.Invoke();
+    }
+
+    private void InputPausePerformed(InputAction.CallbackContext context) {
+        onEnablePauseEvent.Invoke();
+    }
+
+    public void DisablePlayerInputs() {
+        customInput.Player.Disable();
+    }
+
+    public void EnablePlayerInputs() {
+        customInput.Player.Enable();
     }
 }
