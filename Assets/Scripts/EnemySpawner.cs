@@ -31,7 +31,7 @@ public class EnemySpawner : MonoBehaviour
 
     void SpawnEnemy() {
         if(spawnEvents++ % spawnBuffInterval == 0) {
-            spawnInterval -= spawnBuffInterval;
+            spawnInterval -= spawnBuff;
         }
 
         // Get screen boundaries in world space

@@ -1,10 +1,12 @@
 using System;
 using System.Collections;
+using UnityEditor.U2D.Aseprite;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
     private Rigidbody2D myRigidbody2D = null;
+    private Collider2D myCollider2D = null;
 
     [SerializeField]
     private float speed = 3f;
@@ -12,10 +14,15 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private float dashDuration = 0.1f;
 
+    [SerializeField]
+    private int dashLength = 3; // Dash length based on the character's length
+
+    [SerializeField]
+    private float enemyDamage = 5f;
+
     // Dash stuff
     private float dashSpeed;
     private float dashCooldown = 2f;
-    private int dashLength = 6; // Dash length based on the character's length
     private bool isDashing = false;
     private float lastDashTime = -Mathf.Infinity;
 
@@ -26,6 +33,7 @@ public class PlayerController : MonoBehaviour
         float playerLength = GetComponent<SpriteRenderer>().bounds.size.y;
 
         myRigidbody2D = GetComponent<Rigidbody2D>();
+        myCollider2D = GetComponent<Collider2D>();
 
         // Calculate speed based on length and duration
         dashSpeed = (dashLength * playerLength) / dashDuration;
@@ -75,13 +83,26 @@ public class PlayerController : MonoBehaviour
         isDashing = true;
         lastDashTime = Time.time;
 
+        myCollider2D.enabled = false;
+
         // Dash in the current movement direction
         myRigidbody2D.velocity = myRigidbody2D.velocity.normalized * dashSpeed;
 
         // Wait for the dash duration
         yield return new WaitForSeconds(dashDuration);
 
+        myCollider2D.enabled = true;
+
         // Stop dashing
         isDashing = false;
+    }
+
+    private void OnTriggerStay2D(UnityEngine.Collider2D collision) {
+        if(collision.gameObject.layer == LayerMask.NameToLayer("Enemy")) {
+            HP_Manager healthManager = GetComponent<HP_Manager>();
+            if(healthManager != null) {
+                healthManager.TakeDamage(enemyDamage);
+            }
+        }
     }
 }
