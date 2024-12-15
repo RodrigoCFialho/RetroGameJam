@@ -3,8 +3,7 @@ using System.Collections;
 using UnityEditor.U2D.Aseprite;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
-{
+public class PlayerController : MonoBehaviour {
     private Rigidbody2D myRigidbody2D = null;
     private Animator myAnimator = null;
     private HP_Manager hpManager = null;
@@ -19,6 +18,8 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField]
     private int dashLength = 3; // Dash length based on the character's length
+
+    private TrailRenderer trailRenderer;
 
     [SerializeField] private AudioClip[] audioClips;
 
@@ -36,21 +37,19 @@ public class PlayerController : MonoBehaviour
 
     private Vector2 lastMoveDirection;
 
-    private void Awake()
-    {
+    private void Awake() {
         myRigidbody2D = GetComponent<Rigidbody2D>();
-        myAnimator = GetComponent <Animator>();
+        myAnimator = GetComponent<Animator>();
         hpManager = GetComponent<HP_Manager>();
+        trailRenderer = GetComponent<TrailRenderer>();
 
         // Calculate speed based on length and duration
         float playerLength = GetComponent<SpriteRenderer>().bounds.size.y;
         dashSpeed = (dashLength * playerLength) / dashDuration;
     }
 
-    private void FixedUpdate() 
-    {
-        if(!isDashing) 
-        {
+    private void FixedUpdate() {
+        if(!isDashing) {
             myRigidbody2D.velocity = movementInput * speed;
 
             Animations();
@@ -65,8 +64,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void Animations()
-    {
+    private void Animations() {
         myAnimator.SetFloat("MoveY", movementInput.y);
         myAnimator.SetFloat("MoveX", movementInput.x);
         myAnimator.SetFloat("MoveMagnitude", movementInput.magnitude);
@@ -74,14 +72,12 @@ public class PlayerController : MonoBehaviour
         myAnimator.SetFloat("LastMoveX", lastMoveDirection.x);
     }
 
-    public void EnableMovementEvent(Vector2 moveInput)
-    {
+    public void EnableMovementEvent(Vector2 moveInput) {
         //Store last move direction when we stop moving
         float moveX = moveInput.x;
         float moveY = moveInput.y;
 
-        if ((moveX == 0 && moveY == 0) && (movementInput.x != 0 || movementInput.y != 0))
-        {
+        if((moveX == 0 && moveY == 0) && (movementInput.x != 0 || movementInput.y != 0)) {
             lastMoveDirection = movementInput;
         }
 
@@ -89,20 +85,19 @@ public class PlayerController : MonoBehaviour
         movementInput = moveInput;
     }
 
-    public void EnableDashEvent() 
-    {
+    public void EnableDashEvent() {
         // Check cooldown
-        if((Time.time < lastDashTime + dashCooldown) || movementInput == Vector2.zero)
-        {
+        if((Time.time < lastDashTime + dashCooldown) || movementInput == Vector2.zero) {
             return;
         }
-            
+
 
         // Start the dash
         StartCoroutine(Dash());
     }
 
     private IEnumerator Dash() {
+        trailRenderer.emitting = true;
         playerAudioSource.clip = audioClips[0];
         playerAudioSource.Play();
         isDashing = true;
@@ -122,10 +117,10 @@ public class PlayerController : MonoBehaviour
         // Stop dashing
         isDashing = false;
         myAnimator.SetBool("IsDashing", false);
+        trailRenderer.emitting = false;
     }
 
-    private void OnTriggerStay2D(UnityEngine.Collider2D collision) 
-    {
+    private void OnTriggerStay2D(UnityEngine.Collider2D collision) {
         if(collision.gameObject.layer == LayerMask.NameToLayer("Enemy")) {
             HP_Manager healthManager = GetComponent<HP_Manager>();
             if(healthManager != null) {
