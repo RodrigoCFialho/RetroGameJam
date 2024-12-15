@@ -28,4 +28,8 @@ public class EnemyController : MonoBehaviour
 
         rb.velocity = direction * speed;
     }
+
+    public void Die() {
+        Destroy(gameObject);
+    }
 }

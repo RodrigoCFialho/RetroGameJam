@@ -6,8 +6,8 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     private Rigidbody2D myRigidbody2D = null;
-    private Collider2D myCollider2D = null;
     private Animator myAnimator = null;
+    private HP_Manager hpManager = null;
 
     [SerializeField]
     private float speed = 3f;
@@ -20,6 +20,7 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField]
     private float enemyDamage = 5f;
+
 
     // Dash stuff
     private float dashSpeed;
@@ -34,8 +35,8 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         myRigidbody2D = GetComponent<Rigidbody2D>();
-        myCollider2D = GetComponent<Collider2D>();
         myAnimator = GetComponent <Animator>();
+        hpManager = GetComponent<HP_Manager>();
 
         // Calculate speed based on length and duration
         float playerLength = GetComponent<SpriteRenderer>().bounds.size.y;
@@ -49,6 +50,14 @@ public class PlayerController : MonoBehaviour
             myRigidbody2D.velocity = movementInput * speed;
 
             Animations();
+        }
+
+        float timeScinceLastDash = Time.time - lastDashTime;
+
+        if(timeScinceLastDash < dashCooldown) {
+            GameManager.Instance.UpdateDashUI(timeScinceLastDash / dashCooldown);
+        } else {
+            GameManager.Instance.UpdateDashUI(1);
         }
     }
 
@@ -94,7 +103,7 @@ public class PlayerController : MonoBehaviour
         myAnimator.SetBool("IsDashing", true);
         lastDashTime = Time.time;
 
-        myCollider2D.enabled = false;
+        hpManager.SetInvulnerability(true);
 
         // Dash in the current movement direction
         myRigidbody2D.velocity = myRigidbody2D.velocity.normalized * dashSpeed;
@@ -102,7 +111,7 @@ public class PlayerController : MonoBehaviour
         // Wait for the dash duration
         yield return new WaitForSeconds(dashDuration);
 
-        myCollider2D.enabled = true;
+        hpManager.SetInvulnerability(false);
 
         // Stop dashing
         isDashing = false;

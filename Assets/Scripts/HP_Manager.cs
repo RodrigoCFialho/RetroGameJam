@@ -21,6 +21,9 @@ public class HP_Manager : MonoBehaviour
 
     private float currentHP;
     private float lastDamageTime = -Mathf.Infinity;
+    private float totalHealthRecovered = 0;
+
+    private bool invulnerable = false;
 
     // Start is called before the first frame update
     private void Start()
@@ -30,36 +33,44 @@ public class HP_Manager : MonoBehaviour
         InvokeRepeating(nameof(DrainHP), drainInterval, drainInterval);
     }
 
+    public void SetInvulnerability(bool invulnerability) {
+        invulnerable = invulnerability;
+    }
+
     private void DrainHP() 
     {
         // Damage over time (game mechanic)
-        currentHP -= drainHP;
+        TakeDamage(drainHP);
     }
 
     public void TakeDamage(float damage) 
     {
-        if(Time.time - lastDamageTime < damageCooldown) {
-            return;
-        }
+        if(!invulnerable) {
+            if(Time.time - lastDamageTime < damageCooldown) {
+                return;
+            }
 
-        lastDamageTime = Time.time;
-        currentHP -= damage;
+            lastDamageTime = Time.time;
+            currentHP -= damage;
 
-        Debug.Log("Player HP: " + currentHP);
-        GameManager.Instance.UpdateHealthUi(currentHP);
+            GameManager.Instance.UpdateHealthUi(currentHP);
 
-        if(currentHP < 0) {
-            currentHP = 0;
-            Die();
+            if(currentHP < 0) {
+                currentHP = 0;
+                Die();
+            }
         }
     }
 
     public void RegenHP(float amount) 
     {
+        totalHealthRecovered += amount;
         currentHP += amount;
         if(currentHP > maxHP) {
             currentHP = maxHP;
         }
+
+        GameManager.Instance.UpdateHealthUi(currentHP);
     }
 
     public void Die() 

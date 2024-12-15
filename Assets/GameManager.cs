@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
     private float startingHealth;
 
     [SerializeField] private Image healthBar;
+    [SerializeField] private Image dashBar;
 
     private void Awake()
     {
@@ -29,5 +30,9 @@ public class GameManager : MonoBehaviour
     public void UpdateHealthUi(float currentHealth)
     {
         healthBar.fillAmount = currentHealth / startingHealth;
+    }
+
+    public void UpdateDashUI(float dashPercentage) {
+        dashBar.fillAmount = dashPercentage;
     }
 }
