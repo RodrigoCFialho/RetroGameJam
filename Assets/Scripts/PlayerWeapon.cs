@@ -76,7 +76,7 @@ public class PlayerWeapon : MonoBehaviour {
             playerAudioSource.Play();
             //            }
 
-            other.GetComponent<EnemyController>().Die();
+            other.GetComponent<EnemyController>().WasHit();
             if(enemiesHit >= enemiesDetected.Length) {
                 isDetectingEnemies = false;
                 Bounce();

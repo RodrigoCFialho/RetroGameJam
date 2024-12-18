@@ -4,49 +4,53 @@ using UnityEngine;
 
 public class EnemyController : MonoBehaviour
 {
-    [SerializeField]
-    private float speed = 1f;
-
     private GameObject player;
-    private Rigidbody2D rb;
+    private Rigidbody2D myRigidbody2D;
     private Animator myAnimator;
+
+    [SerializeField] private float speed = 1f;
 
     private Vector2 movementInput;
     private Vector2 lastMoveDirection;
 
+    private bool isDead = false;
+
     private void Awake()
     {
         myAnimator = GetComponent<Animator>();
-        rb = GetComponent<Rigidbody2D>();
+        myRigidbody2D = GetComponent<Rigidbody2D>();
     }
 
     private void Start() 
     {
         player = GameObject.FindGameObjectWithTag("Player");
-        if(player == null) {
+
+        if (player == null) 
+        {
             Debug.LogError("Player not found! Ensure the Player GameObject has the 'Player' tag.");
         }
     }
 
-    void Update() {
-        if(player == null)
-            return;
-
-        //Store last move direction when we stop moving
-        float moveX = (player.transform.position - transform.position).normalized.x;
-        float moveY = (player.transform.position - transform.position).normalized.y;
-
-        if ((moveX == 0 && moveY == 0) && (movementInput.x != 0 || movementInput.y != 0))
+    private void Update()
+    {
+        if (player != null && !isDead)
         {
-            lastMoveDirection = movementInput;
+            //Store last move direction when we stop moving
+            float moveX = (player.transform.position - transform.position).normalized.x;
+            float moveY = (player.transform.position - transform.position).normalized.y;
+
+            if ((moveX == 0 && moveY == 0) && (movementInput.x != 0 || movementInput.y != 0))
+            {
+                lastMoveDirection = movementInput;
+            }
+
+            // Calculate direction toward the player
+            movementInput = (player.transform.position - transform.position).normalized;
+
+            Animations();
+
+            myRigidbody2D.velocity = movementInput * speed;
         }
-
-        // Calculate direction toward the player
-        movementInput = (player.transform.position - transform.position).normalized;
-
-        Animations();
-
-        rb.velocity = movementInput * speed;
     }
 
     private void Animations()
@@ -58,7 +62,16 @@ public class EnemyController : MonoBehaviour
         myAnimator.SetFloat("LastMoveX", lastMoveDirection.x);
     }
 
-    public void Die() {
+    public void WasHit() 
+    {
+        isDead = true;
+        myAnimator.SetBool("IsDead", true);
+        myRigidbody2D.velocity = Vector2.zero;
+    }
+
+    //Called by animation event
+    public void Die()
+    {
         Destroy(gameObject);
     }
 }

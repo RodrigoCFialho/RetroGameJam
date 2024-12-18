@@ -101,6 +101,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 2.5
+  enemyVFXanimations:
+  - {fileID: 7400000, guid: fee040d3b0c058b4e8aca232a9250a44, type: 2}
+  - {fileID: 7400000, guid: 3c0322143d51a5047a9681bc956e0539, type: 2}
+  - {fileID: 7400000, guid: 49bfd73502794ed4bb404b1ac868c553, type: 2}
 --- !u!50 &2799758132661014634
 Rigidbody2D:
   serializedVersion: 4
@@ -157,7 +161,7 @@ CapsuleCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: -0.24784255}

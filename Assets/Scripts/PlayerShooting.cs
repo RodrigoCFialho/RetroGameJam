@@ -4,7 +4,8 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
-public class PlayerShooting : MonoBehaviour {
+public class PlayerShooting : MonoBehaviour 
+{
     //Shooting Objects
     [SerializeField] private GameObject weapon;
 
@@ -19,8 +20,17 @@ public class PlayerShooting : MonoBehaviour {
     [SerializeField] private AudioSource playerAudioSource;
     [SerializeField] private List<AudioClip> audioClips;
 
-    public void EnableShootingEvent() {
-        if(playerHasWeapon) {
+    private Health healthScript;
+
+    private void Awake()
+    {
+        healthScript = GetComponent<Health>();
+    }
+
+    public void EnableShootingEvent() 
+    {
+        if (playerHasWeapon) 
+        {
             playerAudioSource.clip = audioClips[0];
             playerAudioSource.Play();
             canPickWeapon = false;
@@ -32,7 +42,8 @@ public class PlayerShooting : MonoBehaviour {
         }
     }
 
-    private IEnumerator CanPickWeapon() {
+    private IEnumerator CanPickWeapon() 
+    {
         yield return new WaitForSeconds(.5f);//Este valor tem de ser sempre igual � dura��o da anima��o do bounce
         var weaponDropSFX = audioClips[1];
         print(weaponDropSFX);
@@ -40,19 +51,24 @@ public class PlayerShooting : MonoBehaviour {
         canPickWeapon = true;
     }
 
-    private void OnTriggerEnter2D(Collider2D other) {
-        if(!playerHasWeapon && canPickWeapon && other.gameObject.CompareTag("Weapon")) {
+    private void OnTriggerEnter2D(Collider2D other) 
+    {
+        if (!playerHasWeapon && canPickWeapon && other.gameObject.CompareTag("Weapon")) 
+        {
             other.transform.position = gameObject.transform.position;
             other.transform.rotation = Quaternion.identity;
             other.transform.parent = gameObject.transform;
             playerHasWeapon = true;
             int enemiesHit = weapon.GetComponent<PlayerWeapon>().GetEnemiesHit();
             int healtToRegen = healPerEnemy * enemiesHit;
-            gameObject.GetComponent<HP_Manager>().RegenHP(healtToRegen);
-            if(enemiesHit > 0) {
+            healthScript.RegenHP(healtToRegen);
+
+            if (enemiesHit > 0) 
+            {
                 var clipToPlay = audioClips[2];
                 playerAudioSource.PlayOneShot(clipToPlay);
             }
+
             weapon.SetActive(false);
         }
     }

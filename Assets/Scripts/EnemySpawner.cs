@@ -22,15 +22,18 @@ public class EnemySpawner : MonoBehaviour
     private Camera mainCamera;
     private int spawnEvents = 0;
 
-    void Start() {
+    private void Start() 
+    {
         mainCamera = Camera.main;
 
         // Start spawning enemies
         InvokeRepeating(nameof(SpawnEnemy), spawnInterval, spawnInterval);
     }
 
-    void SpawnEnemy() {
-        if(spawnEvents++ % spawnBuffInterval == 0) {
+    private void SpawnEnemy() 
+    {
+        if (spawnEvents++ % spawnBuffInterval == 0) 
+        {
             spawnInterval -= spawnBuff;
         }
 
@@ -43,7 +46,8 @@ public class EnemySpawner : MonoBehaviour
         // Randomly pick a side of the screen
         int side = Random.Range(0, 4); // 0: Top, 1: Bottom, 2: Left, 3: Right
 
-        switch(side) {
+        switch (side) 
+        {
             case 0: // Top
                 spawnPosition = new Vector2(Random.Range(screenMin.x, screenMax.x), screenMax.y + spawnOffset);
                 break;

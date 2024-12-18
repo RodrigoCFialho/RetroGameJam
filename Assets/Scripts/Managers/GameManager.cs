@@ -4,9 +4,6 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField]
-    private CustomInput inputActions;
-
     public static GameManager Instance { get; private set; }
 
     private float maxHealth;
@@ -39,11 +36,13 @@ public class GameManager : MonoBehaviour
         Debug.Log("HP: " + healthBar.fillAmount);
     }
 
-    public void UpdateDashUI(float dashPercentage) {
+    public void UpdateDashUI(float dashPercentage) 
+    {
         dashBar.fillAmount = dashPercentage;
     }
 
-    public void PauseGame() {
+    public void PauseGame() 
+    {
         if(!isPaused) {
             Time.timeScale = 0f;
             isPaused = true;
