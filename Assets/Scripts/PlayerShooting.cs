@@ -1,8 +1,10 @@
 using System.Collections;
+using UnityEditor.Animations;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
+
 
 public class PlayerShooting : MonoBehaviour 
 {
@@ -22,8 +24,18 @@ public class PlayerShooting : MonoBehaviour
 
     private Health healthScript;
 
+    [SerializeField]
+    private AnimatorController withWeaponController;
+
+    [SerializeField]
+    private AnimatorController withoutWeaponController;
+
+    private Animator myAnimator;
+
     private void Awake()
     {
+        myAnimator = GetComponent<Animator>();
+
         healthScript = GetComponent<Health>();
     }
 
@@ -31,15 +43,23 @@ public class PlayerShooting : MonoBehaviour
     {
         if (playerHasWeapon) 
         {
-            playerAudioSource.clip = audioClips[0];
-            playerAudioSource.Play();
-            canPickWeapon = false;
-            playerHasWeapon = false;
-            weapon.SetActive(true);
-            weapon.transform.position = this.transform.position;
-            weapon.GetComponent<PlayerWeapon>().Shoot();
-            StartCoroutine(CanPickWeapon());
+            myAnimator.SetBool("IsAttacking", true);
         }
+    }
+
+    //called by Animation Event
+    public void Shoot()
+    {
+        playerAudioSource.clip = audioClips[0];
+        playerAudioSource.Play();
+        canPickWeapon = false;
+        playerHasWeapon = false;
+        weapon.SetActive(true);
+        weapon.transform.position = this.transform.position;
+        weapon.GetComponent<PlayerWeapon>().Shoot();
+        StartCoroutine(CanPickWeapon());
+        myAnimator.SetBool("IsAttacking", false);
+        myAnimator.runtimeAnimatorController = withoutWeaponController;
     }
 
     private IEnumerator CanPickWeapon() 
@@ -70,6 +90,7 @@ public class PlayerShooting : MonoBehaviour
             }
 
             weapon.SetActive(false);
+            myAnimator.runtimeAnimatorController = withWeaponController;
         }
     }
 }
