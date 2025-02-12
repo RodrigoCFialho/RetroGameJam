@@ -1,5 +1,4 @@
 using System.Collections;
-using UnityEditor.Animations;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -25,10 +24,10 @@ public class PlayerShooting : MonoBehaviour
     private Health healthScript;
 
     [SerializeField]
-    private AnimatorController withWeaponController;
+    private RuntimeAnimatorController withWeaponController;
 
     [SerializeField]
-    private AnimatorController withoutWeaponController;
+    private RuntimeAnimatorController withoutWeaponController;
 
     private Animator myAnimator;
 
