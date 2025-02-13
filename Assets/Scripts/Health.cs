@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class Health : MonoBehaviour {
-    [SerializeField]
-    private float startingHP = 100;
+public class Health : MonoBehaviour 
+{
+    [SerializeField] private float startingHP = 100;
 
     [SerializeField]
     private float maxHP = 500;
@@ -32,7 +32,6 @@ public class Health : MonoBehaviour {
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
-    // Start is called before the first frame update
     private void Start() 
     {
         currentHP = startingHP;
@@ -95,7 +94,8 @@ public class Health : MonoBehaviour {
     {
         totalHealthRecovered += amount;
         currentHP += amount;
-        if(currentHP > maxHP) {
+        if(currentHP > maxHP) 
+        {
             currentHP = maxHP;
         }
 

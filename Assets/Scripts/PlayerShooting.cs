@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
-
-
 public class PlayerShooting : MonoBehaviour 
 {
     //Shooting Objects
-    [SerializeField] private GameObject weapon;
+    [SerializeField] private PlayerWeapon weaponScript;
 
     //Shooting Variables
     private bool playerHasWeapon = true;
@@ -34,7 +32,6 @@ public class PlayerShooting : MonoBehaviour
     private void Awake()
     {
         myAnimator = GetComponent<Animator>();
-
         healthScript = GetComponent<Health>();
     }
 
@@ -45,51 +42,59 @@ public class PlayerShooting : MonoBehaviour
             myAnimator.SetBool("IsAttacking", true);
         }
     }
-
-    //called by Animation Event
-    public void Shoot()
+    
+    public void Shoot() //called by Animation Event
     {
+        //play audio
         playerAudioSource.clip = audioClips[0];
         playerAudioSource.Play();
+
+        //bools
         canPickWeapon = false;
         playerHasWeapon = false;
-        weapon.SetActive(true);
-        weapon.transform.position = this.transform.position;
-        weapon.GetComponent<PlayerWeapon>().Shoot();
+
+        //enable shoot
+        weaponScript.Shoot(gameObject);
+
+        // start useless coroutine -> remove later ;-;
         StartCoroutine(CanPickWeapon());
+
         myAnimator.SetBool("IsAttacking", false);
         myAnimator.runtimeAnimatorController = withoutWeaponController;
     }
 
-    private IEnumerator CanPickWeapon() 
+    private IEnumerator CanPickWeapon() // esta coroutine é useless é dar um ganda remove nisto ;-;
     {
         yield return new WaitForSeconds(.5f);//Este valor tem de ser sempre igual � dura��o da anima��o do bounce
-        var weaponDropSFX = audioClips[1];
-        print(weaponDropSFX);
+
+        AudioClip weaponDropSFX = audioClips[1];
         playerAudioSource.PlayOneShot(weaponDropSFX);
+
         canPickWeapon = true;
     }
 
-    private void OnTriggerEnter2D(Collider2D other) 
+    private void OnTriggerStay2D(Collider2D other) 
     {
         if (!playerHasWeapon && canPickWeapon && other.gameObject.CompareTag("Weapon")) 
         {
-            other.transform.position = gameObject.transform.position;
-            other.transform.rotation = Quaternion.identity;
-            other.transform.parent = gameObject.transform;
+            //pickup weapon
             playerHasWeapon = true;
-            int enemiesHit = weapon.GetComponent<PlayerWeapon>().GetEnemiesHit();
-            int healtToRegen = healPerEnemy * enemiesHit;
-            healthScript.RegenHP(healtToRegen);
+            weaponScript.gameObject.SetActive(false);
+            myAnimator.runtimeAnimatorController = withWeaponController;
+
+            //health regen
+            int enemiesHit = weaponScript.GetEnemiesHit();
 
             if (enemiesHit > 0) 
             {
-                var clipToPlay = audioClips[2];
+                AudioClip clipToPlay = audioClips[2];
                 playerAudioSource.PlayOneShot(clipToPlay);
             }
-
-            weapon.SetActive(false);
-            myAnimator.runtimeAnimatorController = withWeaponController;
+            else
+            {
+                int healtToRegen = healPerEnemy * enemiesHit;
+                healthScript.RegenHP(healtToRegen);
+            }
         }
     }
 }
